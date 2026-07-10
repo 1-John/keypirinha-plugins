@@ -10,7 +10,7 @@ import keypirinha_util as kpu
 class JTools(kp.Plugin):
     """
     Keypirinha plugin exposing keywords:
-      - jsum: sum numbers from free-form text using several locale/spacing interpretations
+      - jsum: sum and product of numbers from free-form text using several locale/spacing interpretations
       - jurl: decode URLs/text, remove tracking params, unwrap redirect URLs recursively
       - jstring: text transformations like "Read-me" to: Readme, README, readme, read-me, ReadMe, readMe, READ-ME, read_me, READ_ME
       - jnumber: extract numbers from free-form text using several locale/spacing interpretations. e.g. "The total of 12 items is 1,234.56 USD" => 12, 1234.56
@@ -51,7 +51,7 @@ class JTools(kp.Plugin):
             self.create_item(
                 category=kp.ItemCategory.KEYWORD,
                 label="jsum",
-                short_desc="Sum numbers in free-form text using multiple interpretations",
+                short_desc="Sum and product of numbers in free-form text using multiple interpretations",
                 target="jsum",
                 args_hint=kp.ItemArgsHint.REQUIRED,
                 hit_hint=kp.ItemHitHint.NOARGS,
@@ -83,7 +83,7 @@ class JTools(kp.Plugin):
             self.create_item(
                 category=kp.ItemCategory.KEYWORD,
                 label="jjj",
-                short_desc="All-in-one: sum, URL, string, and number tools combined",
+                short_desc="All-in-one: sum, product, URL, string, and number tools combined",
                 target="jjj",
                 args_hint=kp.ItemArgsHint.REQUIRED,
                 hit_hint=kp.ItemHitHint.NOARGS,
