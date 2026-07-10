@@ -150,25 +150,41 @@ class JTools(kp.Plugin):
             if not values:
                 continue
             total = sum(values, Decimal("0"))
+            product = self._product_decimal(values)
             rendered_total = self._format_decimal(total)
+            rendered_product = self._format_decimal(product)
             rendered_values = " + ".join(self._format_decimal(v) for v in values[:12])
             if len(values) > 12:
                 rendered_values += " + ..."
 
-            payload = f"{rendered_total}"
-            dedupe_key = (mode_key, payload)
-            if dedupe_key in seen:
-                continue
-            seen.add(dedupe_key)
+            sum_payload = f"{rendered_total}"
+            sum_dedupe_key = (mode_key, "sum", sum_payload)
+            if sum_dedupe_key not in seen:
+                seen.add(sum_dedupe_key)
+                results.append(self.create_item(
+                    category=self.ITEMCAT_RESULT,
+                    label=rendered_total,
+                    short_desc=f"SUM | {desc} | {rendered_values} | Enter copies result",
+                    target=sum_payload,
+                    args_hint=kp.ItemArgsHint.FORBIDDEN,
+                    hit_hint=kp.ItemHitHint.IGNORE,
+                ))
 
-            results.append(self.create_item(
-                category=self.ITEMCAT_RESULT,
-                label=rendered_total,
-                short_desc=f"{desc} | {rendered_values} | Enter copies result",
-                target=payload,
-                args_hint=kp.ItemArgsHint.FORBIDDEN,
-                hit_hint=kp.ItemHitHint.IGNORE,
-            ))
+            product_payload = f"{rendered_product}"
+            product_dedupe_key = (mode_key, "product", product_payload)
+            if product_dedupe_key not in seen:
+                seen.add(product_dedupe_key)
+                rendered_multiply = " × ".join(self._format_decimal(v) for v in values[:12])
+                if len(values) > 12:
+                    rendered_multiply += " × ..."
+                results.append(self.create_item(
+                    category=self.ITEMCAT_RESULT,
+                    label=rendered_product,
+                    short_desc=f"PRODUCT | {desc} | {rendered_multiply} | Enter copies result",
+                    target=product_payload,
+                    args_hint=kp.ItemArgsHint.FORBIDDEN,
+                    hit_hint=kp.ItemHitHint.IGNORE,
+                ))
 
         return results
 
@@ -268,6 +284,14 @@ class JTools(kp.Plugin):
         if "." in s:
             s = s.rstrip("0").rstrip(".")
         return s or "0"
+
+    def _product_decimal(self, values):
+        if not values:
+            return Decimal("0")
+        product = Decimal("1")
+        for value in values:
+            product *= value
+        return product
 
     # --------------------------
     # jurl
